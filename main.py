@@ -4,6 +4,7 @@ from pydantic import BaseModel
 import random
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from services.mistral_response import MistralAiConversation
 
 app = FastAPI()
 
@@ -26,19 +27,20 @@ async def read_index():
 
 # Define a simple rule-based response function
 def get_bot_response(user_message: str) -> str:
-    responses = [
-        "Hello! How can I assist you today?",
-        "I'm here to help. What do you need?",
-        "Tell me more about your query.",
-        "I'm not sure what you mean. Can you clarify?"
-    ]
-    return random.choice(responses)
+    print(">get_bot_response",end="")
+    return MistralAiConversation.user_to_server_conversation_flow(user_message)
 
 class Message(BaseModel):
     message: str
 
 @app.post("/chat")
 async def chat(message: Message):
+    print("chat",end="")
     user_message = message.message
     bot_reply = get_bot_response(user_message)
     return {"reply": bot_reply}
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="localhost", port=8000)
