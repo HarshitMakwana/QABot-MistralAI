@@ -104,7 +104,5 @@ class MistralAiConversation:
         print(">user_to_server_conversation_flow",end="")
         if verify_each := FuzzyMatch.get_content_from_index(MistralAiConversation.get_key_components_from_text(user_input)):
             return MistralAiConversation.get_answer_from_dict_make_it_informative(MistralAiConversation.verify_each_query_and_get_answer(verify_each,user_input))
-        else:
-            print("else")
-            return MistralAiConversation.write_valid_response_according_prompt(user_input)
+        return MistralAiConversation.write_valid_response_according_prompt(user_input)
         
